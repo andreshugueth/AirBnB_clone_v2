@@ -9,7 +9,7 @@ from os import getenv
 
 
 class State(BaseModel, Base):
-    """ State class """
+    """State class implementation"""
     __tablename__ = 'states'
     if getenv("HBNB_TYPE_STORAGE") == "db":
         name = Column(String(128), nullable=False)

@@ -20,6 +20,7 @@ place_amenity = Table(
 
 
 class Place(BaseModel, Base):
+    """Place class implementation"""
     __tablename__ = "places"
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         reviews = relationship("Review", passive_deletes=True, backref="place")

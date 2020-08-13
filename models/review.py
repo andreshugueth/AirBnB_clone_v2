@@ -6,6 +6,7 @@ import os
 
 
 class Review(BaseModel, Base):
+    """Review class implementation"""
     __tablename__ = "reviews"
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
         place_id = Column(String(60), ForeignKey('places.id'), nullable=False)
