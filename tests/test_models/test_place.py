@@ -1,41 +1,57 @@
 #!/usr/bin/python3
-"""Module for test Place class"""
-import unittest
-import json
-import pep8
-import datetime
-
-from models.place import Place
-from models.base_model import BaseModel
+"""Place Module for HBNB project."""
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
+from sqlalchemy.orm import relationship
+import models
+from os import getenv
 
 
-class TestPlace(unittest.TestCase):
-    """Test State class implementation"""
+class Place(BaseModel, Base):
+    """A place to stay."""
 
-    def test_doc_module(self):
-        """Module documentation"""
-        doc = Place.__doc__
-        self.assertGreater(len(doc), 1)
+    __tablename__ = 'places'
+    city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
+    user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
+    name = Column(String(128), nullable=False)
+    description = Column(String(1024))
+    number_rooms = Column(Integer, nullable=False, default=0)
+    number_bathrooms = Column(Integer, nullable=False, default=0)
+    max_guest = Column(Integer, nullable=False, default=0)
+    price_by_night = Column(Integer, nullable=False, default=0)
+    latitude = Column(Float)
+    longitude = Column(Float)
 
-    def test_pep8_conformance_place(self):
-        """Test that models/place.py conforms to PEP8."""
-        pep8style = pep8.StyleGuide(quiet=True)
-        result = pep8style.check_files(['models/place.py'])
-        self.assertEqual(result.total_errors, 0,
-                         "Found code style errors (and warnings).")
+    if getenv('HBNB_TYPE_STORAGE') == 'db':
+        place_amenity = Table('place_amenity', Base.metadata,
+                              Column('place_id', String(60),
+                                     ForeignKey('places.id'),
+                                     nullable=False),
+                              Column('amenity_id', String(60),
+                                     ForeignKey('amenities.id'),
+                                     nullable=False))
 
-    def test_pep8_conformance_test_place(self):
-        """Test that tests/test_models/test_place.py conforms to PEP8."""
-        pep8style = pep8.StyleGuide(quiet=True)
-        res = pep8style.check_files(['tests/test_models/test_place.py'])
-        self.assertEqual(res.total_errors, 0,
-                         "Found code style errors (and warnings).")
+        amenities = relationship('Amenity', secondary=place_amenity,
+                                 backref='places', viewonly=False)
+    else:
+        amenity_ids = ""
 
-    def test_doc_constructor(self):
-        """Constructor documentation"""
-        doc = Place.__init__.__doc__
-        self.assertGreater(len(doc), 1)
+        @property
+        def amenities(self):
+            """Amenities getter."""
+            if not self.amenity_ids or type(self.amenity_ids) is not tuple:
+                return []
+            all_amenities = models.storage.all(Amenities)
+            amenities = filter(lambda amenity: amenity.id in self.amenity_ids,
+                               all_amenities)
+            return amenities
 
+        @amenities.setter
+        def amenities(self, amenity):
+            """Amenities setter of amenity id."""
+            if type(amenity) is not Amenity:
+                return
 
-if __name__ == '__main__':
-    unittest.main()
+            if not self.amenity_ids or type(self.amenity_ids) is not tuple:
+                self.amenity_ids = []
+            self.amenity_ids.append(amenity.id)
