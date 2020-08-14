@@ -1,60 +1,41 @@
 #!/usr/bin/python3
-
+"""Module for test State class"""
 import unittest
-import os
+import json
 import pep8
+import datetime
+
 from models.state import State
 from models.base_model import BaseModel
 
 
 class TestState(unittest.TestCase):
+    """Test State class implementation"""
 
-    @classmethod
-    def setUpClass(cls):
-        cls.state1 = State()
-        cls.state1.name = "North_Carolina_AKA_THE_BEST_STATE"
+    def test_doc_module(self):
+        """Module documentation"""
+        doc = State.__doc__
+        self.assertGreater(len(doc), 1)
 
-    @classmethod
-    def tearDownClass(cls):
-        del cls.state1
-        try:
-            os.remove("file.json")
-        except FileNotFoundError:
-            pass
+    def test_pep8_conformance_state(self):
+        """Test that models/state.py conforms to PEP8."""
+        pep8style = pep8.StyleGuide(quiet=True)
+        result = pep8style.check_files(['models/state.py'])
+        self.assertEqual(result.total_errors, 0,
+                         "Found code style errors (and warnings).")
 
-    def test_style_check(self):
-        """
-        Tests pep8 style
-        """
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/state.py'])
-        self.assertEqual(p.total_errors, 0, "fix pep8")
+    def test_pep8_conformance_test_state(self):
+        """Test that tests/test_models/test_state.py conforms to PEP8."""
+        pep8style = pep8.StyleGuide(quiet=True)
+        res = pep8style.check_files(['tests/test_models/test_state.py'])
+        self.assertEqual(res.total_errors, 0,
+                         "Found code style errors (and warnings).")
 
-    def test_is_subclass(self):
-        self.assertTrue(issubclass(self.state1.__class__, BaseModel), True)
-
-    def test_checking_for_functions(self):
-        self.assertIsNotNone(State.__doc__)
-
-    def test_has_attributes(self):
-        self.assertTrue('id' in self.state1.__dict__)
-        self.assertTrue('created_at' in self.state1.__dict__)
-        self.assertTrue('updated_at' in self.state1.__dict__)
-        self.assertTrue('name' in self.state1.__dict__)
-
-    def test_attributes_are_strings(self):
-        self.assertEqual(type(self.state1.name), str)
-
-    @unittest.skipIf(
-        os.getenv('HBNB_TYPE_STORAGE') == 'db',
-        "won't work in db")
-    def test_save(self):
-        self.state1.save()
-        self.assertNotEqual(self.state1.created_at, self.state1.updated_at)
-
-    def test_to_dict(self):
-        self.assertEqual('to_dict' in dir(self.state1), True)
+    def test_doc_constructor(self):
+        """Constructor documentation"""
+        doc = State.__init__.__doc__
+        self.assertGreater(len(doc), 1)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
