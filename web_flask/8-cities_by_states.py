@@ -11,7 +11,7 @@ app = Flask(__name__)
 @app.route('/cities_by_states', strict_slashes=False)
 def index():
     """renders an HTML with a list of states"""
-    states = sorted(list(storage.all("State").values()), key=lambda x: x.name)
+    states = storage.all("State").values()
     return render_template('8-cities_by_states.html', states=states)
 
 
