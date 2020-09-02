@@ -34,4 +34,3 @@ class State(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """State constructor"""
         super().__init__(*args, **kwargs)
-
