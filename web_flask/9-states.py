@@ -8,13 +8,13 @@ from models import storage
 app = Flask(__name__)
 
 
-@app.route('/states', defaults={'id': None}, strict_slashes=False)
-@app.route('/states/<id>', strict_slashes=False)
-def index(id):
+@app.route('/states', defaults={'state_id': None}, strict_slashes=False)
+@app.route('/states/<state_id>', strict_slashes=False)
+def index(state_id):
     """renders an HTML with a list of states"""
     states = storage.all("State").values()
-    if id is not None:
-        state_id = 'State.{}'.format(id)
+    if state_id is not None:
+        state_id = 'State.{}'.format(state_id)
     return render_template('9-states.html', states=states, state_id=state_id)
 
 
