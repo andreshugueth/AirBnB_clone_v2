@@ -11,12 +11,13 @@ from os import getenv
 class State(BaseModel, Base):
     """ State class """
     __tablename__ = 'states'
+    name = Column(String(128), nullable=False)
     if getenv("HBNB_TYPE_STORAGE") == "db":
-        name = Column(String(128), nullable=False)
         cities = relationship("City", passive_deletes=True, backref="cities")
     else:
         name = ""
 
+    if getenv('HBNB_TYPE_STORAGE') != "db":
         @property
         def cities(self):
             """city getter"""
@@ -33,3 +34,4 @@ class State(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """State constructor"""
         super().__init__(*args, **kwargs)
+
