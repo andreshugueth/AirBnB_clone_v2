@@ -8,7 +8,7 @@ from models import storage
 app = Flask(__name__)
 
 
-app.route('/states_list', strict_slashes=False)
+@app.route('/states_list', strict_slashes=False)
 def index():
     """renders an HTML with a list of states"""
     states = sorted(list(storage.all("State").values()), key=lambda x: x.name)
