@@ -76,7 +76,13 @@ button:hover {
     padding-bottom: 22px;
 
     overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: none;
     max-height: 300px;
+}
+
+.popover::-webkit-scrollbar {
+    display: none;
 }
 
 .locations:hover .popover, .amenities:hover .popover {
